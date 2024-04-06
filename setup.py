@@ -14,7 +14,6 @@ if __name__ == "__main__":
             extra_compile_args=[],
             extra_link_args=[],
             language="c99",
-            language_level=3
         )
     ]
     setup(
