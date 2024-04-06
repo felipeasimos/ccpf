@@ -1,0 +1,9 @@
+venv/
+native/*.c
+build/
+*.so
+.eggs/
+**/*.so
+src/ccpf.egg-info/
+__pycache__/
+**/__pycache__/
