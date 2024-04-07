@@ -1,1 +1,1 @@
-from .ccpf import validate
+from .ccpf import *
