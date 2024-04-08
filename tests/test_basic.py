@@ -13,3 +13,9 @@ def test_cpf():
         assert ccpf.unmask(ccpf.mask(cpf)) == cpf
         cpf = str(int(cpf) + 1)
         assert ccpf.validate(cpf) == False
+        error = False
+        try:
+            ccpf.ccpf
+        except AttributeError:
+            error = True
+        assert not error
