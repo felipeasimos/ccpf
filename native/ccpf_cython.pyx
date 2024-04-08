@@ -3,7 +3,7 @@ from libc.stdlib cimport free, malloc, realloc
 cdef extern from "ccpf/ccpf.h":
     int cpf_validate(char* cpf)
     void cpf_generate(char* cpf)
-    int cpf_has_mask(char* cpf);
+    int cpf_has_mask(char* cpf, int size);
     void cpf_mask(char* cpf)
     void cpf_unmask(char* cpf)
 
@@ -24,8 +24,9 @@ def generate() -> str:
 
 def has_mask(cpf: str) -> bool:
     cpf_bytes = cpf.encode()
+    cpf_len = len(cpf_bytes)
     cdef char* cpf_string = cpf_bytes
-    return bool(cpf_has_mask(cpf_string))
+    return bool(cpf_has_mask(cpf_string, <int> cpf_len))
 
 def mask(cpf: str) -> str:
     cpf_bytes = cpf.encode() + b'\x00\x00\x00'

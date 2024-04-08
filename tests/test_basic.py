@@ -2,6 +2,9 @@ import ccpf
 
 
 def test_basic_cpf():
+    for i in range(100):
+        cpf = ccpf.generate()
+        assert ccpf.validate(cpf)
     is_valid = ccpf.validate("adf")
     print("validate: ", is_valid)
     cpf = ccpf.generate()
