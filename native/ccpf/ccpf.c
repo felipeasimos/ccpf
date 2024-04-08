@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-int cpf_validate(char* cpf) {
+int cpf_validate(char* cpf, int size) {
     uint16_t second_sum = 0;
     uint16_t first_sum = 0;
     for(uint8_t i = 0; i < 9; i++) {
@@ -44,17 +44,19 @@ void cpf_generate(char* cpf) {
 
 int cpf_has_mask(char* cpf, int size) {
     if(size < 11) return 2;
-    // check for first format
-    uint8_t is_first_format = 1;
-    for(uint8_t i = 0; i < 11; i++) {
-        if(cpf[i] > '9' || cpf[i] < '0') {
-            is_first_format = 0;
-            break;
+    if(size == 11) {
+        // check for first format
+        uint8_t is_first_format = 1;
+        for(uint8_t i = 0; i < 11; i++) {
+            if(cpf[i] > '9' || cpf[i] < '0') {
+                is_first_format = 0;
+                break;
+            }
         }
+        if(is_first_format) return 0;
     }
-    if(is_first_format) return 0;
-    if(size < 14) return 2;
-    if(cpf[3] != '.' && cpf[7] != '.' && cpf[11] == '-') return 2;
+    if(size != 14) return 2;
+    if(cpf[3] != '.' && cpf[7] != '.' && cpf[11] != '-') return 2;
     for(uint8_t i = 0; i < 3; i++) {
         if(cpf[i] > '9' || cpf[i] < '0') return 2;
         if(cpf[i+4] > '9' || cpf[i+4] < '0') return 2;
@@ -64,18 +66,28 @@ int cpf_has_mask(char* cpf, int size) {
     return 1;
 }
 
-int cpf_mask(char* cpf) {
+int cpf_mask(char* cpf, int size) {
+    int res = cpf_has_mask(cpf, size);
+    if(res == 2) return 0;
+    if(res == 1) return 1;
+
+    for(unsigned int i = 9; i < 11; i++) cpf[i+3] = cpf[i];
+    for(unsigned int i = 6; i < 9; i++) cpf[i+2] = cpf[i];
+    for(unsigned int i = 3; i < 6; i++) cpf[i+1] = cpf[i];
+    cpf[11] = '-';
+    cpf[3] = '.';
+    cpf[7] = '.';
+    return 1;
 }
 
-int cpf_unmask(char* cpf) {
-    cpf[0] = 'a';
-    cpf[1] = 'a';
-    cpf[2] = 'a';
-    cpf[3] = 'a';
-    cpf[4] = 'a';
-    cpf[5] = 'a';
-    cpf[6] = 'a';
-    cpf[7] = 'a';
-    cpf[8] = 'a';
-    cpf[10] = 'a';
+int cpf_unmask(char* cpf, int size) {
+    int res = cpf_has_mask(cpf, size);
+    if(res == 2) return 0;
+    if(res == 0) return 1;
+
+    for(unsigned int i = 3; i < 6; i++) cpf[i] = cpf[i+1];
+    for(unsigned int i = 6; i < 9; i++) cpf[i] = cpf[i+2];
+    for(unsigned int i = 9; i < 11; i++) cpf[i] = cpf[i+3];
+    cpf[11] = '\0';
+    return 1;
 }
