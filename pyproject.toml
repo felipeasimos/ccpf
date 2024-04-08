@@ -17,7 +17,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
-dynamic = ["version"]
+version = "0.0.1"
 
 [build-system]
 requires = ["setuptools", "cython", "wheel"]
