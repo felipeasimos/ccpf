@@ -1,5 +1,7 @@
 #pragma once
 
+// 0 -> not valid
+// 1 -> valid
 int cpf_validate(char* cpf, int size);
 // 'cpf' must have space for 11 chars
 void cpf_generate(char* cpf);

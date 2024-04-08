@@ -13,6 +13,11 @@ def validate(cpf: str) -> bool:
     cdef char* cpf_string = cpf_bytes
     return bool(cpf_validate(cpf_string, cpf_len))
 
+
+class CPFInvalidFormat(Exception):
+    def __init__(self, cpf):
+        super(Exception, self).__init__(cpf)
+
 def generate() -> str:
     # don't allocate for null byte
     cdef char* cpf_string = <char*> malloc(11 * sizeof(char));
@@ -23,24 +28,34 @@ def generate() -> str:
         free(cpf_string)
     return py_bytes.decode('ascii')
 
+# can throw exception for invalid format
 def has_mask(cpf: str) -> bool:
     cpf_bytes = cpf.encode()
     cpf_len = len(cpf_bytes)
     cdef char* cpf_string = cpf_bytes
-    return bool(cpf_has_mask(cpf_string, <int> cpf_len))
+    res = cpf_has_mask(cpf_string, <int> cpf_len)
+    if(res == 2):
+        raise CPFInvalidFormat(cpf)
+    return bool(res)
 
+# can throw exception for invalid format
 def mask(cpf: str) -> str:
     cpf_bytes = cpf.encode() + b'\x00\x00\x00'
     cpf_len = len(cpf_bytes)
     cdef char* cpf_string = cpf_bytes
-    cpf_mask(cpf_string, cpf_len)
+    res = cpf_mask(cpf_string, cpf_len)
+    if(res == 2):
+        raise CPFInvalidFormat(cpf)
     py_bytes = cpf_string[:14]
     return py_bytes.decode('ascii')
 
+# can throw exception for invalid format
 def unmask(cpf: str) -> str:
     cpf_bytes = cpf.encode()
     cpf_len = len(cpf_bytes)
     cdef char* cpf_string = cpf_bytes
-    cpf_unmask(cpf_string, cpf_len)
+    res = cpf_unmask(cpf_string, cpf_len)
+    if(res == 2):
+        raise CPFInvalidFormat(cpf)
     py_bytes = cpf_string[:11]
     return py_bytes.decode('ascii')
