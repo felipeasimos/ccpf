@@ -4,8 +4,8 @@ cdef extern from "ccpf/ccpf.h":
     int cpf_validate(char* cpf, int size);
     void cpf_generate(char* cpf);
     int cpf_has_mask(char* cpf, int size);
-    void cpf_mask(char* cpf, int size);
-    void cpf_unmask(char* cpf, int size);
+    int cpf_mask(char* cpf, int size);
+    int cpf_unmask(char* cpf, int size);
 
 def validate(cpf: str) -> bool:
     cpf_bytes = cpf.encode()
@@ -15,6 +15,10 @@ def validate(cpf: str) -> bool:
 
 
 class CPFInvalidFormat(Exception):
+    """
+    Raised when CPF is not in a valid format.
+    The CPF itself may still be invalid if this is not raised.
+    """
     def __init__(self, cpf):
         super(Exception, self).__init__(cpf)
 

@@ -44,10 +44,9 @@ void cpf_generate(char* cpf) {
     if(verificator_digit == 10) verificator_digit = 0;
     cpf[10] = verificator_digit + '0';
 }
-
-#include <stdio.h>
 int cpf_has_mask(char* cpf, int size) {
     if(size < 11) return 2;
+    if(14 < size) return 2;
     if(size == 11) {
         // check for first format
         uint8_t is_first_format = 1;
@@ -72,7 +71,7 @@ int cpf_has_mask(char* cpf, int size) {
 
 int cpf_mask(char* cpf, int size) {
     int res = cpf_has_mask(cpf, size-3);
-    if(res == 2) return 0;
+    if(res == 2) return 2;
     if(res == 1) return 1;
 
     for(unsigned int i = 10; i >= 9; i--) cpf[i+3] = cpf[i];
@@ -86,7 +85,7 @@ int cpf_mask(char* cpf, int size) {
 
 int cpf_unmask(char* cpf, int size) {
     int res = cpf_has_mask(cpf, size);
-    if(res == 2) return 0;
+    if(res == 2) return 2;
     if(res == 0) return 1;
 
     for(unsigned int i = 3; i < 6; i++) cpf[i] = cpf[i+1];
