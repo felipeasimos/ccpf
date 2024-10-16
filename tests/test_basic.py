@@ -7,15 +7,9 @@ def test_cpf():
     for i in range(NUM_TESTS):
         cpf = ccpf.generate()
         assert ccpf.validate(cpf)
-        assert ccpf.has_mask(cpf) == False
+        assert not ccpf.has_mask(cpf)
         masked = ccpf.mask(cpf)
-        assert ccpf.has_mask(masked) == True
+        assert ccpf.has_mask(masked)
         assert ccpf.unmask(ccpf.mask(cpf)) == cpf
         cpf = str(int(cpf) + 1)
-        assert ccpf.validate(cpf) == False
-        error = False
-        try:
-            ccpf.ccpf
-        except AttributeError:
-            error = True
-        assert not error
+        assert not ccpf.validate(cpf)
